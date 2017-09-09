@@ -69,27 +69,40 @@ function Invoke-LPLogin
             }
 
             $LoginResponse = Invoke-WebRequest -Uri "$LPUrl/login.php" -Method Post -Body $LoginBody @CommonSettings
+            Write-Debug $($LoginResponse | Out-String)
 
-            switch ($([xml]$Login.Content).response.error) {
+            switch ($([xml]$LoginResponse.Content).response.error.cause) {
                 $null
                 {
-                    if ($([xml]$Login.Content).response.ok)
+                    if ($([xml]$LoginResponse.Content).response.ok)
                     {
                         Write-Verbose "Sucessful login"
-                        $([xml]$Login.Content).response.ok
+                        $([xml]$LoginResponse.Content).response.ok
                     }
                     else
                     {
                         throw "Malformed response from server"
-                    }                    
+                    }
                 }
                 "outofbandrequired"
                 {
+                    Write-Verbose "Trying login again with out of band request"
                     $LoginBody.Add("outofbandrequest",1)
                     $LoginResponse = Invoke-WebRequest -Uri "$LPUrl/login.php" -Method Post -Body $LoginBody @CommonSettings
+                    Write-Debug $($LoginResponse | Out-String)
+
                     if ($([xml]$LoginResponse.Content).response.error)
                     {
                         throw "$($([xml]$LoginResponse.Content).response.error.message)"
+                    }
+                    if ($([xml]$LoginResponse.Content).response.ok)
+                    {
+                        Write-Verbose "Sucessful login"
+                        $([xml]$LoginResponse.Content).response.ok
+                    }
+                    else
+                    {
+                        throw "Malformed response from server"
                     }
                 }
                 Default
