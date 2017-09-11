@@ -77,7 +77,6 @@ function Invoke-LPLogin
                     if ($([xml]$LoginResponse.Content).response.ok)
                     {
                         Write-Verbose "Sucessful login"
-                        $([xml]$LoginResponse.Content).response.ok
                     }
                     else
                     {
@@ -98,7 +97,6 @@ function Invoke-LPLogin
                     if ($([xml]$LoginResponse.Content).response.ok)
                     {
                         Write-Verbose "Sucessful login"
-                        $([xml]$LoginResponse.Content).response.ok
                     }
                     else
                     {
