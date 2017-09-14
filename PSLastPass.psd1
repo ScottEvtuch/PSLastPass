@@ -1,10 +1,10 @@
-@{
+﻿@{
 
 # Script module or binary module file associated with this manifest.
 RootModule = 'PSLastPass'
 
 # Version number of this module.
-ModuleVersion = '0.0.1'
+ModuleVersion = '0.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -61,13 +61,13 @@ Description = 'An unofficial PowerShell module for invoking the LastPass API'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @()
+FunctionsToExport = 'Get-LPAccounts'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
 
 # Variables to export from this module
-VariablesToExport = '*'
+# VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
 AliasesToExport = @()
@@ -87,7 +87,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('LastPass')
+        Tags = 'LastPass'
 
         # A URL to the license for this module.
         LicenseUri = 'https://raw.githubusercontent.com/ScottEvtuch/PSLastPass/master/LICENSE'
@@ -101,9 +101,12 @@ PrivateData = @{
         # ReleaseNotes of this module
         # ReleaseNotes = ''
 
-    } # End of PSData hashtable
+        # External dependent modules of this module
+        # ExternalModuleDependencies = ''
 
-} # End of PrivateData hashtable
+    } # End of PSData hashtable
+    
+ } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
 # HelpInfoURI = ''
