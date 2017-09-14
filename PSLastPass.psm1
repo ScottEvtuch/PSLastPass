@@ -24,17 +24,21 @@
     }
     
     # Load saved session if possible
+    $LPSession = New-Object -TypeName Microsoft.PowerShell.Commands.WebRequestSession
     try
     {
-        $LPSession = Import-Clixml -Path "$env:APPDATA\PSLastPass\Session.xml" -ErrorAction Stop
+        $LPImportedCookie = Import-Clixml -Path "$env:APPDATA\PSLastPass\Session.xml" -ErrorAction Stop
+        $LPSessionCookie = New-Object -TypeName System.Net.Cookie
+        $LPImportedCookie.psobject.Properties | Where-Object "Name" -NE "TimeStamp" | ForEach-Object {$LPSessionCookie.($_.Name) = $_.Value}
+        $LPSession.Cookies.Add($LPSessionCookie)
     }
     catch
     {
-        Write-Verbose "No saved session to load"
-        $LPSession = New-Object -TypeName Microsoft.PowerShell.Commands.WebRequestSession
+        Write-Verbose "No saved session to load: $_"
     }
 
     # Load saved vault if possible
+    $LPIterations = $null
     try
     {
         $LPVault = Import-Clixml -Path "$env:APPDATA\PSLastPass\Vault.xml" -ErrorAction Stop
