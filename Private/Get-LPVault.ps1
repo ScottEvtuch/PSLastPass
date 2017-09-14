@@ -14,18 +14,21 @@ function Get-LPVault
 
     Begin
     {
-        Invoke-LPLogin
+        if (!$LPSession.Cookies.GetCookies($LPURL)["PHPSESSID"])
+        {
+            $LPSession = Invoke-LPLogin
+        }
     }
     Process
     {
         Write-Verbose "Setting up common variables"
-        $CommonSettings = @{
+        $WebRequestSettings = @{
             "UserAgent" = $LPUserAgent;
             "WebSession" = $LPSession;
             "UseBasicParsing" = $true;
             "ErrorAction" = "Stop";
         }
-        
+
         Write-Verbose "Getting the vault"
         try
         {
@@ -35,7 +38,7 @@ function Get-LPVault
                 "hasplugin" = "1.2.1";
             }
 
-            $VaultResponse = Invoke-WebRequest -Uri "$LPUrl/getaccts.php" -Method Post -Body $VaultBody @CommonSettings
+            $VaultResponse = Invoke-WebRequest -Uri "$LPUrl/getaccts.php" -Method Post -Body $VaultBody @WebRequestSettings
         }
         catch
         {
@@ -70,5 +73,6 @@ function Get-LPVault
         }
 
         $script:LPVault = $Vault
+        $Vault
     }
 }
