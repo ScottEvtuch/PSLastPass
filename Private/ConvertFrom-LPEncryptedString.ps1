@@ -16,7 +16,11 @@ function ConvertFrom-LPEncryptedString
                    ValueFromPipeline=$true)]
         [ValidateNotNullOrEmpty()]
         [String]
-        $String
+        $String,
+
+        # The applicable sharing key
+        [String]
+        $Key
     )
 
     Begin
@@ -25,7 +29,14 @@ function ConvertFrom-LPEncryptedString
         {
             Invoke-LPLogin | Out-Null
         }
-        $KeyBytes = $Encoding.GetBytes($LPKeys.GetNetworkCredential().Password)
+        if ($Key)
+        {
+            $KeyBytes = $Encoding.GetBytes($Key)
+        }
+        else
+        {
+            $KeyBytes = $Encoding.GetBytes($LPKeys.GetNetworkCredential().Password)
+        }
     }
     Process
     {
