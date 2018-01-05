@@ -16,7 +16,11 @@ function ConvertFrom-LPEncryptedString
                    ValueFromPipeline=$true)]
         [ValidateNotNullOrEmpty()]
         [String]
-        $String
+        $String,
+
+        # The applicable sharing key
+        [String]
+        $Key
     )
 
     Begin
@@ -25,7 +29,14 @@ function ConvertFrom-LPEncryptedString
         {
             Invoke-LPLogin | Out-Null
         }
-        $KeyBytes = $Encoding.GetBytes($LPKeys.GetNetworkCredential().Password)
+        if ($Key)
+        {
+            $KeyBytes = $Encoding.GetBytes($Key)
+        }
+        else
+        {
+            $KeyBytes = $Encoding.GetBytes($LPKeys.GetNetworkCredential().Password)
+        }
     }
     Process
     {
@@ -36,6 +47,7 @@ function ConvertFrom-LPEncryptedString
             $AES = New-Object -TypeName "System.Security.Cryptography.AesManaged"
             $AES.Key = $KeyBytes
             $AES.IV = $StringBytes[1..16]
+            $AES.Padding = [System.Security.Cryptography.PaddingMode]::Zeros
             $Decryptor = $AES.CreateDecryptor()
             $PlainBytes = $Decryptor.TransformFinalBlock($StringBytes,17,$($StringBytes.Length-17))
             $String = $Encoding.GetString($PlainBytes)

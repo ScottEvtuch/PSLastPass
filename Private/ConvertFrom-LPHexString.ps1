@@ -22,10 +22,14 @@ function ConvertFrom-LPHexString
     {
         $CharArray = @()
         
+        Write-Verbose "Converting from Hex string"
+        Write-Debug "Hex string: $String"
         for ($i = 0; $i -lt $String.Length; $i = $i + 2)
         {
-            Write-Verbose "Converting from Hex string"
-            $CharArray += [char][System.Convert]::ToInt16($String.Substring($i,2),16)
+            if ($Encoding.GetBytes($String.Substring($i,2)) -ne [byte]16)
+            {
+                $CharArray += [char][System.Convert]::ToInt16($String.Substring($i,2),16)
+            }            
         }
 
         -join $CharArray
