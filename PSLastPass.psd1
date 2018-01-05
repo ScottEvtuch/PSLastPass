@@ -4,7 +4,7 @@
 RootModule = 'PSLastPass'
 
 # Version number of this module.
-ModuleVersion = '0.1'
+ModuleVersion = 'Development'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
