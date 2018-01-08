@@ -19,8 +19,7 @@
     }
     catch
     {
-        Write-Verbose "No saved credentials to load, prompting user"
-        $LPCredentials = Get-Credential -Message "Please input your credentials"
+        Write-Verbose "No saved credentials to load: $_"
     }
     
     # Load saved session if possible

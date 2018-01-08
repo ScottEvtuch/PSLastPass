@@ -12,6 +12,13 @@ function Get-LPKeys
     [CmdletBinding()]
     Param()
 
+    Begin
+    {
+        if (!$LPCredentials)
+        {
+            $LPCredentials = Get-LPCredentials
+        }
+    }
     Process
     {
         Write-Verbose "Setting up common variables"
