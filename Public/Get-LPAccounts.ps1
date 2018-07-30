@@ -10,13 +10,18 @@
 function Get-LPAccounts
 {
     [CmdletBinding()]
-    Param()
+    Param(
+        # Force a refresh
+        [Parameter()]
+        [Switch]
+        $Refresh
+    )
 
     Begin
     {
-        if (!$LPAccounts)
+        if (!$LPAccounts -or $Refresh)
         {
-            if (!$LPVault)
+            if (!$LPVault -or $Refresh)
             {
                 $LPVault = Get-LPVault
             }
@@ -28,7 +33,7 @@ function Get-LPAccounts
     }
     Process
     {
-        if (!$LPAccounts)
+        if (!$LPAccounts -or $Refresh)
         {
             $VaultAccounts = $LPVault | Where-Object -Property 'ID' -Match "(ACCT|SHAR)"
 
