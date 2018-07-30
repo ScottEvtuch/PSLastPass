@@ -36,7 +36,6 @@ function Save-LPData
                 'Iterations' = $LPIterations
                 'Cookies' = $LPSession.Cookies.GetCookies($LPURL)
                 'Vault' = $LPVault
-                'Accounts' = $LPAccounts
             } | Export-CliXml $env:APPDATA\PSLastPass.xml
         }
         catch {

@@ -33,8 +33,6 @@
     }
 
         $LPVault = $SavedData.Vault
-
-        $LPAccounts = $SavedData.Accounts
     }
     catch
     {
