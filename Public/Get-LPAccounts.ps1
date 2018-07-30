@@ -61,22 +61,38 @@ function Get-LPAccounts
 
                             $AccountData += $DataItem
                         }
-                        $AccountData = $AccountData
-                        
 
                         $Username = $AccountData[7] | ConvertFrom-LPEncryptedString -Key $SharingKey
-                        $Password = $AccountData[8] | ConvertFrom-LPEncryptedString -Key $SharingKey | ConvertTo-SecureString -AsPlainText -Force
-            
+                        $Password = $AccountData[8] | ConvertFrom-LPEncryptedString -Key $SharingKey
+                        if ($Password -ne "")
+                        {
+                            $Password = $Password | ConvertTo-SecureString -AsPlainText -Force
+                            if ($Username -ne "")
+                            {
+                                $PSCredential = New-Object -TypeName PSCredential -ArgumentList @($Username,$Password);
+                            }
+                            else
+                            {
+                                $Username = $null
+                                $PSCredential = $null
+                            }                            
+                        }
+                        else
+                        {
+                            $Password = $null
+                            $PSCredential = $null
+                        }
+
                         $Account = @{
                             "ID" = $AccountData[0] | ConvertFrom-LPEncryptedString;
                             "Name" = $AccountData[1] | ConvertFrom-LPEncryptedString -Key $SharingKey;
                             "Group" = $AccountData[2] | ConvertFrom-LPEncryptedString -Key $SharingKey;
                             "URL" = $AccountData[3] | ConvertFrom-LPEncryptedString | ConvertFrom-LPHexString;
                             "Notes" = $AccountData[4] | ConvertFrom-LPEncryptedString -Key $SharingKey;
-                            "PSCredential" = New-Object -TypeName PSCredential -ArgumentList @($Username,$Password);
+                            "PSCredential" = $PSCredential;
                             "Username" = $Username;
                             "Password" = $Password;
-                            "SecureNote" = $AccountData[11] | ConvertFrom-LPEncryptedString;
+                            "SecureNote" = [bool]$($AccountData[11] | ConvertFrom-LPEncryptedString);
                         }
 
                         $LPAccounts += New-Object -TypeName PSObject -Property $Account
@@ -105,9 +121,9 @@ function Get-LPAccounts
                     }
                 }
             }
+            $script:LPAccounts = $LPAccounts
         }
 
-        $script:LPAccounts = $LPAccounts
         $script:LPAccounts
     }
 }
