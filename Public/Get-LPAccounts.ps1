@@ -92,7 +92,7 @@ function Get-LPAccounts
                             "PSCredential" = $PSCredential;
                             "Username" = $Username;
                             "Password" = $Password;
-                            "SecureNote" = [bool]$($AccountData[11] | ConvertFrom-LPEncryptedString);
+                            "SecureNote" = $($AccountData[11] | ConvertFrom-LPEncryptedString);
                         }
 
                         $LPAccounts += New-Object -TypeName PSObject -Property $Account
