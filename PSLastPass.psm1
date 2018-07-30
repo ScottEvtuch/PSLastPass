@@ -12,39 +12,33 @@
     # Set a variable for ASCII encoding
     $Encoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")
 
-    # Load saved credentials if possible
-    try
-    {
-        $LPCredentials = Import-Clixml -Path "$env:APPDATA\PSLastPass\Creds.xml" -ErrorAction Stop
-    }
-    catch
-    {
-        Write-Verbose "No saved credentials to load: $_"
-    }
-    
-    # Load saved session if possible
+    # Set up a session variable
     $LPSession = New-Object -TypeName Microsoft.PowerShell.Commands.WebRequestSession
+
+    # Load saved data if possible
     try
     {
-        $LPImportedCookie = Import-Clixml -Path "$env:APPDATA\PSLastPass\Session.xml" -ErrorAction Stop
+        $SavedData = Import-Clixml -Path "$env:APPDATA\PSLastPass.xml" -ErrorAction Stop
+
+        $LPCredentials = $SavedData.Credentials
+        $LPKeys = $SavedData.LPKeys
+        $LPIterations = $SavedData.Iterations
+
+        $SavedData.Cookies | ForEach-Object {
         $LPSessionCookie = New-Object -TypeName System.Net.Cookie
-        $LPImportedCookie.psobject.Properties | Where-Object "Name" -NE "TimeStamp" | ForEach-Object {$LPSessionCookie.($_.Name) = $_.Value}
+            $_.psobject.Properties | Where-Object "Name" -NE "TimeStamp" | ForEach-Object {
+                $LPSessionCookie.($_.Name) = $_.Value
+            }
         $LPSession.Cookies.Add($LPSessionCookie)
     }
-    catch
-    {
-        Write-Verbose "No saved session to load: $_"
-    }
 
-    # Load saved vault if possible
-    $LPIterations = $null
-    try
-    {
-        $LPVault = Import-Clixml -Path "$env:APPDATA\PSLastPass\Vault.xml" -ErrorAction Stop
+        $LPVault = $SavedData.Vault
+
+        $LPAccounts = $SavedData.Accounts
     }
     catch
     {
-        Write-Verbose "No saved vault to load"
+        Write-Verbose "No saved data to load: $_"
     }
 
 #region Public Functions
