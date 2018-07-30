@@ -33,7 +33,8 @@ function Get-LPKeys
         try
         {
             $IterationsResponse = Invoke-WebRequest -Uri "$LPUrl/iterations.php" -Method Post -Body @{"username"=$LPCredentials.UserName.ToLower();} @WebRequestSettings
-            $script:LPIterations = [int] $IterationsResponse.Content
+            $script:LPIterations = if ([int]$IterationsResponse.Content -eq 1) {100100} else {[int] $IterationsResponse.Content}
+            Write-Debug "Using $LPIterations iterations"
         }
         catch
         {
