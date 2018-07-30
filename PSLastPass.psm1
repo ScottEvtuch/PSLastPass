@@ -7,7 +7,7 @@
     $LPUserAgent = "LastPass-CLI/1.2.1"
 
     # Import the PBKDF2 dll
-    Add-Type -Path  "$PSScriptRoot\lib\PBKDF2.NET.dll" -ErrorAction Stop
+    Add-Type -Path "$PSScriptRoot\lib\PBKDF2.NET.dll" -ErrorAction Stop
 
     # Set a variable for ASCII encoding
     $Encoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")

@@ -50,7 +50,7 @@ function Get-LPKeys
             $KeyPBKDF2 = [System.Security.Cryptography.PBKDF2]::new($PasswordBytes,$UsernameBytes,$LPIterations,"HMACSHA256")
             $KeyBytes = $KeyPBKDF2.GetBytes(32)
             $KeyString = $Encoding.GetString($KeyBytes) | ConvertTo-SecureString -AsPlainText -Force
-            
+
             $LoginPBKDF2 = [System.Security.Cryptography.PBKDF2]::new($KeyBytes,$PasswordBytes,1,"HMACSHA256")
             $LoginBytes = $LoginPBKDF2.GetBytes(32)
             $LoginString = [System.BitConverter]::ToString($LoginBytes).Replace("-","").ToLower()
