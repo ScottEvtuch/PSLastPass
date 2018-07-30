@@ -29,16 +29,21 @@ function Get-LPKeys
             "ErrorAction" = "Stop";
         }
 
-        Write-Verbose "Getting the number of iterations"
-        try
+        if (!$LPIterations)
         {
-            $IterationsResponse = Invoke-WebRequest -Uri "$LPUrl/iterations.php" -Method Post -Body @{"username"=$LPCredentials.UserName.ToLower();} @WebRequestSettings
-            $script:LPIterations = if ([int]$IterationsResponse.Content -eq 1) {100100} else {[int] $IterationsResponse.Content}
-            Write-Debug "Using $LPIterations iterations"
-        }
-        catch
-        {
-            throw "Failed to get iterations from LastPass API: $_"
+            Write-Verbose "Getting the number of iterations"
+            try
+            {
+                $IterationsResponse = Invoke-WebRequest -Uri "$LPUrl/iterations.php" -Method Post -Body @{"username"=$LPCredentials.UserName.ToLower();} @WebRequestSettings
+                Write-Debug $($IterationsResponse | Out-String)
+    
+                $script:LPIterations = if ([int]$IterationsResponse.Content -eq 1) {100100} else {[int] $IterationsResponse.Content}
+                Write-Debug "Using $LPIterations iterations"
+            }
+            catch
+            {
+                throw "Failed to get iterations from LastPass API: $_"
+            }
         }
 
         Write-Verbose "Producing the keys"
