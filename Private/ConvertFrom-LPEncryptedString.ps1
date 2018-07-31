@@ -47,12 +47,19 @@ function ConvertFrom-LPEncryptedString
             $AES = New-Object -TypeName "System.Security.Cryptography.AesManaged"
             $AES.Key = $KeyBytes
             $AES.IV = $StringBytes[1..16]
-            $AES.Padding = [System.Security.Cryptography.PaddingMode]::Zeros
+            $AES.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7
             $Decryptor = $AES.CreateDecryptor()
             $PlainBytes = $Decryptor.TransformFinalBlock($StringBytes,17,$($StringBytes.Length-17))
-            $String = $Encoding.GetString($PlainBytes)
+            $OutString = $Encoding.GetString($PlainBytes)
+            $Decryptor.Dispose()
+            $AES.Dispose()
+        }
+        else
+        {
+            Write-Verbose "Not AES encrypted, returning unaltered string"
+            $OutString = $String
         }
 
-        $String
+        $OutString.Trim([byte]0)
     }
 }

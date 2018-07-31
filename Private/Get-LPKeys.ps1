@@ -12,6 +12,13 @@ function Get-LPKeys
     [CmdletBinding()]
     Param()
 
+    Begin
+    {
+        if (!$LPLogin)
+        {
+            $LPLogin = Get-LPLogin
+        }
+    }
     Process
     {
         Write-Verbose "Setting up common variables"
@@ -22,27 +29,33 @@ function Get-LPKeys
             "ErrorAction" = "Stop";
         }
 
-        Write-Verbose "Getting the number of iterations"
-        try
+        if (!$LPIterations)
         {
-            $IterationsResponse = Invoke-WebRequest -Uri "$LPUrl/iterations.php" -Method Post -Body @{"username"=$LPCredentials.UserName.ToLower();} @WebRequestSettings
-            $script:LPIterations = [int] $IterationsResponse.Content
-        }
-        catch
-        {
-            throw "Failed to get iterations from LastPass API: $_"
+            Write-Verbose "Getting the number of iterations"
+            try
+            {
+                $IterationsResponse = Invoke-WebRequest -Uri "$LPUrl/iterations.php" -Method Post -Body @{"username"=$LPLogin.UserName.ToLower();} @WebRequestSettings
+                Write-Debug $($IterationsResponse | Out-String)
+    
+                $script:LPIterations = if ([int]$IterationsResponse.Content -eq 1) {100100} else {[int] $IterationsResponse.Content}
+                Write-Debug "Using $LPIterations iterations"
+            }
+            catch
+            {
+                throw "Failed to get iterations from LastPass API: $_"
+            }
         }
 
         Write-Verbose "Producing the keys"
         try
         {
-            $UsernameBytes = $Encoding.GetBytes($LPCredentials.UserName.ToLower())
-            $PasswordBytes = $Encoding.GetBytes($LPCredentials.GetNetworkCredential().Password)
+            $UsernameBytes = $Encoding.GetBytes($LPLogin.UserName.ToLower())
+            $PasswordBytes = $Encoding.GetBytes($LPLogin.GetNetworkCredential().Password)
 
             $KeyPBKDF2 = [System.Security.Cryptography.PBKDF2]::new($PasswordBytes,$UsernameBytes,$LPIterations,"HMACSHA256")
             $KeyBytes = $KeyPBKDF2.GetBytes(32)
             $KeyString = $Encoding.GetString($KeyBytes) | ConvertTo-SecureString -AsPlainText -Force
-            
+
             $LoginPBKDF2 = [System.Security.Cryptography.PBKDF2]::new($KeyBytes,$PasswordBytes,1,"HMACSHA256")
             $LoginBytes = $LoginPBKDF2.GetBytes(32)
             $LoginString = [System.BitConverter]::ToString($LoginBytes).Replace("-","").ToLower()

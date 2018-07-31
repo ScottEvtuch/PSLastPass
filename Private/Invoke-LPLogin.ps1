@@ -33,7 +33,7 @@ function Invoke-LPLogin
         {
             $LoginBody = @{
                 "xml" = 2;
-                "username" = $LPCredentials.UserName.ToLower();
+                "username" = $LPLogin.UserName.ToLower();
                 "hash" = $LPKeys.UserName;
                 "iterations" = $LPIterations;
                 "includeprivatekeyenc" = 1;
@@ -58,6 +58,7 @@ function Invoke-LPLogin
                 }
                 "outofbandrequired"
                 {
+                    Write-Host "Out of band authentication is required"
                     Write-Verbose "Trying login again with out of band request"
                     $LoginBody.Add("outofbandrequest",1)
                     $LoginResponse = Invoke-WebRequest -Uri "$LPUrl/login.php" -Method Post -Body $LoginBody @WebRequestSettings
@@ -75,6 +76,11 @@ function Invoke-LPLogin
                     {
                         throw "Malformed response from server"
                     }
+                }
+                "unknownpassword"
+                {
+                    Write-Host "Invalid LastPass password"
+                    $script:LPLogin = $null
                 }
                 Default
                 {
