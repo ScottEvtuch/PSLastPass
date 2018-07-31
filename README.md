@@ -27,6 +27,12 @@ UserName         Password
 username         System.Security.SecureString
 ```
 
+You can also use this command (or its alias "lastpass") inline with other PowerShell commands that take a PSCredential parameter
+
+```
+Enter-PSSession -ComputerName server.example.com -Credential (lastpass server.example.com)
+```
+
 ## Get-LPAccounts
 
 This command will return an array of all of your LastPass entries. 
