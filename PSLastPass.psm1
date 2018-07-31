@@ -20,7 +20,7 @@
     {
         $SavedData = Import-Clixml -Path "$env:APPDATA\PSLastPass.xml" -ErrorAction Stop
 
-        $LPCredentials = $SavedData.Credentials
+        $LPLogin = $SavedData.Login
         $LPKeys = $SavedData.LPKeys
         $LPIterations = $SavedData.Iterations
 

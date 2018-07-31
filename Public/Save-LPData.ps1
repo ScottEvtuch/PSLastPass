@@ -31,7 +31,7 @@ function Save-LPData
     {
         try {
             @{
-                'Credentials' = $LPCredentials
+                'Login' = $LPLogin
                 'LPKeys' = $LPKeys
                 'Iterations' = $LPIterations
                 'Cookies' = $LPSession.Cookies.GetCookies($LPURL)

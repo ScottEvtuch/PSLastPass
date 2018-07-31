@@ -14,9 +14,9 @@ function Get-LPKeys
 
     Begin
     {
-        if (!$LPCredentials)
+        if (!$LPLogin)
         {
-            $LPCredentials = Get-LPCredentials
+            $LPLogin = Get-LPLogin
         }
     }
     Process
@@ -34,7 +34,7 @@ function Get-LPKeys
             Write-Verbose "Getting the number of iterations"
             try
             {
-                $IterationsResponse = Invoke-WebRequest -Uri "$LPUrl/iterations.php" -Method Post -Body @{"username"=$LPCredentials.UserName.ToLower();} @WebRequestSettings
+                $IterationsResponse = Invoke-WebRequest -Uri "$LPUrl/iterations.php" -Method Post -Body @{"username"=$LPLogin.UserName.ToLower();} @WebRequestSettings
                 Write-Debug $($IterationsResponse | Out-String)
     
                 $script:LPIterations = if ([int]$IterationsResponse.Content -eq 1) {100100} else {[int] $IterationsResponse.Content}
@@ -49,8 +49,8 @@ function Get-LPKeys
         Write-Verbose "Producing the keys"
         try
         {
-            $UsernameBytes = $Encoding.GetBytes($LPCredentials.UserName.ToLower())
-            $PasswordBytes = $Encoding.GetBytes($LPCredentials.GetNetworkCredential().Password)
+            $UsernameBytes = $Encoding.GetBytes($LPLogin.UserName.ToLower())
+            $PasswordBytes = $Encoding.GetBytes($LPLogin.GetNetworkCredential().Password)
 
             $KeyPBKDF2 = [System.Security.Cryptography.PBKDF2]::new($PasswordBytes,$UsernameBytes,$LPIterations,"HMACSHA256")
             $KeyBytes = $KeyPBKDF2.GetBytes(32)

@@ -33,7 +33,7 @@ function Invoke-LPLogin
         {
             $LoginBody = @{
                 "xml" = 2;
-                "username" = $LPCredentials.UserName.ToLower();
+                "username" = $LPLogin.UserName.ToLower();
                 "hash" = $LPKeys.UserName;
                 "iterations" = $LPIterations;
                 "includeprivatekeyenc" = 1;
