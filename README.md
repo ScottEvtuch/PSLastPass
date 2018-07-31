@@ -38,7 +38,7 @@ Enter-PSSession -ComputerName server.example.com -Credential (lastpass server.ex
 This command will return an array of all of your LastPass entries. 
 
 ```
-PS C:\Users\sevtuch> Get-LPAccounts | Where-Object Name -Like "*example*"
+Get-LPAccounts | Where-Object Name -Like "*example*"
 
 
 URL          : https://example.com/
