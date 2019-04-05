@@ -9,8 +9,9 @@
     # Import the PBKDF2 dll
     Add-Type -Path "$PSScriptRoot\lib\PBKDF2.NET.dll" -ErrorAction Stop
 
-    # Set a variable for ASCII encoding
-    $Encoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")
+    # Set a variables for text encoding
+    $BasicEncoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")
+    $TextEncoding = [System.Text.Encoding]::GetEncoding("UTF-8")
 
     # Set up a session variable
     $LPSession = New-Object -TypeName Microsoft.PowerShell.Commands.WebRequestSession

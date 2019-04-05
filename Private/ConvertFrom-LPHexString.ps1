@@ -26,7 +26,7 @@ function ConvertFrom-LPHexString
         Write-Debug "Hex string: $String"
         for ($i = 0; $i -lt $String.Length; $i = $i + 2)
         {
-            if ($Encoding.GetBytes($String.Substring($i,2)) -ne [byte]16)
+            if ($BasicEncoding.GetBytes($String.Substring($i,2)) -ne [byte]16)
             {
                 $CharArray += [char][System.Convert]::ToInt16($String.Substring($i,2),16)
             }

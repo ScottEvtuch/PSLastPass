@@ -45,7 +45,7 @@ function Get-LPAccounts
                     'ACCT'
                     {
                         Write-Debug "Starting ACCT processing"
-                        $AccountBytes = $Encoding.GetBytes($VaultAccount.Data)
+                        $AccountBytes = $BasicEncoding.GetBytes($VaultAccount.Data)
 
                         $AccountCursor = 0
                         $AccountData = @()
@@ -56,7 +56,7 @@ function Get-LPAccounts
                             Write-Debug "Data item length is $Length"
                             $AccountCursor = $AccountCursor + 4
 
-                            $DataItem = $Encoding.GetString($AccountBytes[$AccountCursor..$($AccountCursor+$Length-1)])
+                            $DataItem = $BasicEncoding.GetString($AccountBytes[$AccountCursor..$($AccountCursor+$Length-1)])
                             $AccountCursor = $AccountCursor + $Length
 
                             $AccountData += $DataItem
@@ -100,7 +100,7 @@ function Get-LPAccounts
                     'SHAR'
                     {
                         Write-Debug "Starting SHAR processing"
-                        $ShareBytes = $Encoding.GetBytes($VaultAccount.Data)
+                        $ShareBytes = $BasicEncoding.GetBytes($VaultAccount.Data)
 
                         $ShareCursor = 0
                         $ShareData = @()
@@ -111,7 +111,7 @@ function Get-LPAccounts
                             Write-Debug "Data item length is $Length"
                             $ShareCursor = $ShareCursor + 4
 
-                            $DataItem = $Encoding.GetString($ShareBytes[$ShareCursor..$($ShareCursor+$Length-1)])
+                            $DataItem = $BasicEncoding.GetString($ShareBytes[$ShareCursor..$($ShareCursor+$Length-1)])
                             $ShareCursor = $ShareCursor + $Length
 
                             $ShareData += $DataItem

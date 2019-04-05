@@ -31,11 +31,11 @@ function ConvertFrom-LPEncryptedString
         }
         if ($Key)
         {
-            $KeyBytes = $Encoding.GetBytes($Key)
+            $KeyBytes = $BasicEncoding.GetBytes($Key)
         }
         else
         {
-            $KeyBytes = $Encoding.GetBytes($LPKeys.GetNetworkCredential().Password)
+            $KeyBytes = $BasicEncoding.GetBytes($LPKeys.GetNetworkCredential().Password)
         }
     }
     Process
@@ -43,14 +43,14 @@ function ConvertFrom-LPEncryptedString
         if (($String[0] -eq '!') -and (($String.Length % 16) -eq 1) -and ($String.Length -gt 32))
         {
             Write-Verbose "Decrypting using AES"
-            $StringBytes = $Encoding.GetBytes($String)
+            $StringBytes = $BasicEncoding.GetBytes($String)
             $AES = New-Object -TypeName "System.Security.Cryptography.AesManaged"
             $AES.Key = $KeyBytes
             $AES.IV = $StringBytes[1..16]
             $AES.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7
             $Decryptor = $AES.CreateDecryptor()
             $PlainBytes = $Decryptor.TransformFinalBlock($StringBytes,17,$($StringBytes.Length-17))
-            $OutString = $Encoding.GetString($PlainBytes)
+            $OutString = $TextEncoding.GetString($PlainBytes)
             $Decryptor.Dispose()
             $AES.Dispose()
         }

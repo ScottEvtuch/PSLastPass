@@ -58,7 +58,7 @@ function Get-LPCredential
         Write-Verbose "Searching through $($LPAccounts.Count) accounts"
         foreach ($match in $matches.GetEnumerator()) {
             Write-Verbose "Searching for: $($match.Value)"
-            $Candidates = @($LPAccounts | Where-Object PSCredential -NE $null | Where-Object {$_.URL -like "*$($match.Value)" -or $_.URL -like "*$($match.Value)/" -or $_.URL -like "*$($match.Value):*"})
+            $Candidates = @($LPAccounts | Where-Object PSCredential -NE $null | Where-Object {$_.URL -like "*$($match.Value)" -or $_.URL -like "*$($match.Value)/*" -or $_.URL -like "*$($match.Value):*"})
             Write-Verbose "Found $($Candidates.Count) candidates"
             if ($Candidates.Count -gt 0)
             {

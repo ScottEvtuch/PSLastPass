@@ -46,7 +46,7 @@ function Get-LPVault
         }
 
         Write-Verbose "Converting vault into raw bytes"
-        $VaultBytes = $Encoding.GetBytes($VaultResponse.Content)
+        $VaultBytes = $BasicEncoding.GetBytes($VaultResponse.Content)
 
         $VaultCursor = 0
         $Vault = @()
@@ -54,7 +54,7 @@ function Get-LPVault
         while ($VaultCursor -lt $VaultBytes.Count)
         {
             Write-Debug "Cursor is $VaultCursor"
-            $ID = $Encoding.GetString($VaultBytes[$VaultCursor..$($VaultCursor+3)])
+            $ID = $BasicEncoding.GetString($VaultBytes[$VaultCursor..$($VaultCursor+3)])
             Write-Debug "Entry ID is $ID"
             $VaultCursor = $VaultCursor + 4
             $Length = [System.BitConverter]::ToUInt32($VaultBytes[$($VaultCursor+3)..$VaultCursor],0)
@@ -67,7 +67,7 @@ function Get-LPVault
             $VaultItem = @{
                 "ID" = $ID;
                 "Length" = $Length;
-                "Data" = $Encoding.GetString($Data);
+                "Data" = $BasicEncoding.GetString($Data);
             }
             $Vault += New-Object -TypeName PSObject -Property $VaultItem
         }

@@ -49,12 +49,12 @@ function Get-LPKeys
         Write-Verbose "Producing the keys"
         try
         {
-            $UsernameBytes = $Encoding.GetBytes($LPLogin.UserName.ToLower())
-            $PasswordBytes = $Encoding.GetBytes($LPLogin.GetNetworkCredential().Password)
+            $UsernameBytes = $BasicEncoding.GetBytes($LPLogin.UserName.ToLower())
+            $PasswordBytes = $BasicEncoding.GetBytes($LPLogin.GetNetworkCredential().Password)
 
             $KeyPBKDF2 = [System.Security.Cryptography.PBKDF2]::new($PasswordBytes,$UsernameBytes,$LPIterations,"HMACSHA256")
             $KeyBytes = $KeyPBKDF2.GetBytes(32)
-            $KeyString = $Encoding.GetString($KeyBytes) | ConvertTo-SecureString -AsPlainText -Force
+            $KeyString = $BasicEncoding.GetString($KeyBytes) | ConvertTo-SecureString -AsPlainText -Force
 
             $LoginPBKDF2 = [System.Security.Cryptography.PBKDF2]::new($KeyBytes,$PasswordBytes,1,"HMACSHA256")
             $LoginBytes = $LoginPBKDF2.GetBytes(32)
