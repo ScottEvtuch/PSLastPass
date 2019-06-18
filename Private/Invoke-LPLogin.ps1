@@ -77,6 +77,28 @@ function Invoke-LPLogin
                         throw "Malformed response from server"
                     }
                 }
+                "googleauthrequired"
+                {
+                    Write-Host "Two-factor authentication is required"
+                    $2faCode = Read-Host -Prompt "Please provide two-factor code"
+                    Write-Verbose "Trying login again with two-factor request"
+                    $LoginBody.Add("otp",$2faCode)
+                    $LoginResponse = Invoke-WebRequest -Uri "$LPUrl/login.php" -Method Post -Body $LoginBody @WebRequestSettings
+                    Write-Debug $($LoginResponse | Out-String)
+
+                    if ($([xml]$LoginResponse.Content).response.error)
+                    {
+                        throw "$($([xml]$LoginResponse.Content).response.error.message)"
+                    }
+                    if ($([xml]$LoginResponse.Content).response.ok)
+                    {
+                        Write-Verbose "Sucessful login"
+                    }
+                    else
+                    {
+                        throw "Malformed response from server"
+                    }
+                }
                 "unknownpassword"
                 {
                     Write-Host "Invalid LastPass password"
