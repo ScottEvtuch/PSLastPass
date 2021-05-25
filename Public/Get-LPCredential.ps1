@@ -30,7 +30,12 @@ function Get-LPCredential
         # Only return the first result
         [Parameter()]
         [switch]
-        $First
+        $First,
+
+        # Force a refresh
+        [Parameter()]
+        [Switch]
+        $Refresh
     )
 
     Begin
@@ -43,9 +48,9 @@ function Get-LPCredential
         {
             $LPKeys = Get-LPKeys
         }
-        if (!$LPAccounts)
+        if (!$LPAccounts -or $Refresh)
         {
-            $LPAccounts = Get-LPAccounts
+            $LPAccounts = Get-LPAccounts -Refresh:$Refresh
         }
     }
     Process
