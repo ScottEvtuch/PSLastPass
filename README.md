@@ -15,6 +15,10 @@ Passwords of any type are never stored in plaintext anywhere. Your LastPass emai
 
 While the module is loaded, your entry names, URLs, usernames, and notes will be stored unencrypted in module-scoped PowerShell variables.
 
+## Caching and Offline Use
+
+New caching behavior in v1.2 means that Save-LPData will now only save your credentials by default. Any subsequent module imports will cause the vault to be retrieved from the LastPass API. You can return to the previous behavior by adding the -SaveVault switch parameter which will save the entire vault offline for future use. You can also force an update of the vault by running Sync-LPData or adding the -Refresh switch parameter to any Get function.
+
 ## Get-LPCredential
 
 This command will return a PSCredential object for the best matching entry for a URL. If more than one entry exists that is equally specific (based on protocol, port number, directory, and query string) then they will all be returned unless you specify the "First" switch.
@@ -35,7 +39,7 @@ Enter-PSSession -ComputerName server.example.com -Credential (lastpass server.ex
 
 ## Get-LPAccounts
 
-This command will return an array of all of your LastPass entries. 
+This command will return an array of all of your LastPass entries.
 
 ```
 Get-LPAccounts | Where-Object Name -Like "*example*"
@@ -54,8 +58,16 @@ PSCredential : System.Management.Automation.PSCredential
 
 ## Save-LPData
 
-This command will save your LastPass credentials, cookie, and encrypted vault to the %APPDATA% directory on your machine. Everything that is saved is encrypted with the exception of your LastPass email address, its PBKDF2 hash, and the cookie.
+This command will save your LastPass credentials, cookie, and optionally your encrypted vault to the %APPDATA% directory on your machine. Everything that is saved is encrypted with the exception of your LastPass email address, its PBKDF2 hash, and the cookie.
 
 ```
-Save-LPData
+Save-LPData -SaveVault
+```
+
+## Sync-LPData
+
+This command forces a refresh of your LastPass data including any new entries you have added since the module was loaded or the vault was saved with Save-LPData.
+
+```
+Sync-LPData
 ```
