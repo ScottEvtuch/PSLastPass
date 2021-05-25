@@ -9,8 +9,12 @@
 #>
 function Save-LPData
 {
-    [CmdletBinding()]
-    Param()
+    Param(
+        # Optionally save the vaulted passwords offline
+        [Parameter()]
+        [Switch]
+        $SaveVault
+    )
 
     Begin
     {
@@ -30,13 +34,16 @@ function Save-LPData
     Process
     {
         try {
-            @{
+            $SavedData = @{
                 'Login' = $LPLogin
                 'LPKeys' = $LPKeys
                 'Iterations' = $LPIterations
                 'Cookies' = $LPSession.Cookies.GetCookies($LPURL)
-                'Vault' = $LPVault
-            } | Export-CliXml $env:APPDATA\PSLastPass.xml
+            }
+            if ($SaveVault) {
+                $SavedData.Vault = $LPVault
+            }
+            $SavedData | Export-CliXml $env:APPDATA\PSLastPass.xml
         }
         catch {
             throw "Failed to export LastPass data: $_"
