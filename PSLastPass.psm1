@@ -32,8 +32,10 @@
             }
         $LPSession.Cookies.Add($LPSessionCookie)
     }
-
-        $LPVault = $SavedData.Vault
+        if ($SavedData.Vault) {
+            Write-Verbose "Importing saved vault data"
+            $LPVault = $SavedData.Vault
+        }
     }
     catch
     {

@@ -4,7 +4,7 @@
 RootModule = 'PSLastPass'
 
 # Version number of this module.
-ModuleVersion = '1.1'
+ModuleVersion = '1.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -61,7 +61,7 @@ Description = 'An unofficial PowerShell module for invoking the LastPass API'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-LPAccounts', 'Get-LPCredential', 'Save-LPData'
+FunctionsToExport = 'Get-LPAccounts', 'Get-LPCredential', 'Save-LPData', 'Sync-LPData'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -105,7 +105,7 @@ PrivateData = @{
         # ExternalModuleDependencies = ''
 
     } # End of PSData hashtable
-    
+
  } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
